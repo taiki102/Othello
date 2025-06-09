@@ -6,9 +6,7 @@
 #define DIR 8
 
 #pragma region Bool
-#define bool int
-#define true 1
-#define false 0
+
 #pragma endregion
 #pragma region Vector2 Int
 
