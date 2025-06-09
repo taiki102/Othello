@@ -3,6 +3,10 @@
   "WorkspaceRootPath": "C:\\Users\\225003_ta-arai\\source\\repos\\Othello.v2\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{E2CCE202-597A-470D-837E-008D7BB45D56}|Othello.v2.vcxproj|C:\\Users\\225003_ta-arai\\source\\repos\\Othello.v2\\board.c||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{E2CCE202-597A-470D-837E-008D7BB45D56}|Othello.v2.vcxproj|solutionrelative:board.c||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{E2CCE202-597A-470D-837E-008D7BB45D56}|Othello.v2.vcxproj|C:\\Users\\225003_ta-arai\\source\\repos\\Othello.v2\\input.c||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
       "RelativeMoniker": "D:0:0:{E2CCE202-597A-470D-837E-008D7BB45D56}|Othello.v2.vcxproj|solutionrelative:input.c||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     },
@@ -13,10 +17,6 @@
     {
       "AbsoluteMoniker": "D:0:0:{E2CCE202-597A-470D-837E-008D7BB45D56}|Othello.v2.vcxproj|C:\\Users\\225003_ta-arai\\source\\repos\\Othello.v2\\utility.c||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
       "RelativeMoniker": "D:0:0:{E2CCE202-597A-470D-837E-008D7BB45D56}|Othello.v2.vcxproj|solutionrelative:utility.c||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{E2CCE202-597A-470D-837E-008D7BB45D56}|Othello.v2.vcxproj|C:\\Users\\225003_ta-arai\\source\\repos\\Othello.v2\\board.c||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
-      "RelativeMoniker": "D:0:0:{E2CCE202-597A-470D-837E-008D7BB45D56}|Othello.v2.vcxproj|solutionrelative:board.c||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\225003_ta-arai\\source\\repos\\Othello.v2\\consoleCtl.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
@@ -50,11 +50,11 @@
       "DocumentGroups": [
         {
           "DockedWidth": 624,
-          "SelectedChildIndex": 0,
+          "SelectedChildIndex": 7,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 1,
               "Title": "input.c",
               "DocumentMoniker": "C:\\Users\\225003_ta-arai\\source\\repos\\Othello.v2\\input.c",
               "RelativeDocumentMoniker": "input.c",
@@ -91,7 +91,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 3,
               "Title": "utility.c",
               "DocumentMoniker": "C:\\Users\\225003_ta-arai\\source\\repos\\Othello.v2\\utility.c",
               "RelativeDocumentMoniker": "utility.c",
@@ -103,7 +103,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 2,
               "Title": "game.h",
               "DocumentMoniker": "C:\\Users\\225003_ta-arai\\source\\repos\\Othello.v2\\game.h",
               "RelativeDocumentMoniker": "game.h",
@@ -139,15 +139,16 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 0,
               "Title": "board.c",
               "DocumentMoniker": "C:\\Users\\225003_ta-arai\\source\\repos\\Othello.v2\\board.c",
               "RelativeDocumentMoniker": "board.c",
               "ToolTip": "C:\\Users\\225003_ta-arai\\source\\repos\\Othello.v2\\board.c",
               "RelativeToolTip": "board.c",
-              "ViewState": "AgIAAB8AAAAAAAAAAAAjwDcAAAAEAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAADcAAAAEAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000423|",
-              "WhenOpened": "2025-06-04T05:18:12.73Z"
+              "WhenOpened": "2025-06-04T05:18:12.73Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
