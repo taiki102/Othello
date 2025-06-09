@@ -1,3 +1,4 @@
 ﻿  Othello.c
-C:\Users\225003_ta-arai\source\repos\Othello\Othello\Othello.c(185,21): warning C4013: 関数 'OutRange' は定義されていません。int 型の値を返す外部関数と見なします。
-  Othello.vcxproj -> C:\Users\225003_ta-arai\source\repos\Othello\x64\Debug\Othello.exe
+C:\Users\225003_ta-arai\source\repos\Othello.v2\Othello\Othello.c(184,21): warning C4013: 関数 'OutRange' は定義されていません。int 型の値を返す外部関数と見なします。
+C:\Users\225003_ta-arai\source\repos\Othello.v2\Othello\Othello.c(331,11): warning C4244: '関数': 'time_t' から 'unsigned int' への変換です。データが失われる可能性があります。
+  Othello.vcxproj -> C:\Users\225003_ta-arai\source\repos\Othello.v2\x64\Debug\Othello.exe

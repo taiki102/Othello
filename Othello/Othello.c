@@ -1,13 +1,14 @@
 ﻿#include <stdio.h>
 #include <stdlib.h>
 #include <conio.h>
+#include <time.h>
 #include "utility.h"
 #define MAXROW 8
 #define DIR 8
 
-#pragma region Bool
-
-#pragma endregion
+#define bool int
+#define true 1
+#define false 0
 #pragma region Vector2 Int
 
 typedef struct {
@@ -196,7 +197,7 @@ void Board_Decide() {
                     freeNode(tmplist);
                     break;
                 }
-                else if(check == 0)
+                else if (check == 0)
                 {
                     freeNode(tmplist);
                     break;
@@ -264,6 +265,7 @@ void NodeToArray(Node* head) {
                     }
                 }
             }
+            Is_A_Turn = pcount > ecount ? 1 : 0;
             result = 1;
         }
         else
@@ -313,25 +315,6 @@ void CalcSetArea() {
                             // else 敵石なら continue
                         }
                     }
-
-
-
-                    /*
-                    if (field[tg.x][tg.y] == enemyNum) {
-
-                        while (!OutRange(tg)) {
-                            tg = Plus(tg, dir[i]);
-
-                            int check = field[tg.x][tg.y];
-                            if (check == 0) {
-                                Add(&head, tg);
-                                break;
-                            }
-                            else if (check == playerNum) {
-                                break;
-                            }
-                        }
-                    }*/
                 }
             }
         }
@@ -339,6 +322,18 @@ void CalcSetArea() {
 
     NodeToArray(head);
     freeNode(head);
+    flg_Update = 0;
+}
+
+void CPU_CalcCheck() {
+    if (Is_A_Turn) return;
+
+    srand(time(NULL)); // 乱数の初期化
+    int r = rand() % (length - 1); // 0〜99の乱数
+
+    target = list[r];
+    Board_Decide();
+
     flg_Update = 0;
 }
 
@@ -366,15 +361,17 @@ void ScreenManager() {
             else
                snprintf(text, sizeof(text), "○ - :%d　● - :%d 勝者:%s", pcount, ecount, Is_A_Turn ? "○-PlayerA" : "●-PlayerB ");
             
-            Screen_Display("　　　 対人ゲーム ", text);
             CalcSetArea();
+            Screen_Display("　　　 対人ゲーム ", text);
         }
             break;
         case CPU:{
             char text[40];
             snprintf(text, sizeof(text), "%d ターン目 - %s のターン", turn, Is_A_Turn ? "Player" : "CPU");
-            Screen_Display("　　　 CPUゲーム ", text);
             CalcSetArea();
+            CPU_CalcCheck();
+            Screen_Display("　　　 CPUゲーム ", text);
+           // Sleep(1000);
         }
             break;
         default:
