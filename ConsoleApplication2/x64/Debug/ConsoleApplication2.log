@@ -1,0 +1,6 @@
+﻿  ConsoleApplication2.c
+C:\Users\225026_k-kitamura\source\repos\ConsoleApplication2\ConsoleApplication2\ConsoleApplication2.c(188,21): warning C4013: 関数 'OutRange' は定義されていません。int 型の値を返す外部関数と見なします。
+C:\Users\225026_k-kitamura\source\repos\ConsoleApplication2\ConsoleApplication2\ConsoleApplication2.c(231,9): warning C4033: 'CPU_ChooseMove' : 関数には戻り値が必要です。
+C:\Users\225026_k-kitamura\source\repos\ConsoleApplication2\ConsoleApplication2\ConsoleApplication2.c(405,21): warning C4550: 式は引数リストのない関数として評価します。
+C:\Users\225026_k-kitamura\source\repos\ConsoleApplication2\ConsoleApplication2\ConsoleApplication2.c(241,1): warning C4715: 'CPU_ChooseMove': 値を返さないコントロール パスがあります。
+  ConsoleApplication2.vcxproj -> C:\Users\225026_k-kitamura\source\repos\ConsoleApplication2\x64\Debug\ConsoleApplication2.exe
