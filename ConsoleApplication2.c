@@ -314,6 +314,7 @@ void NodeToArray(Node* head) {
                 }
                 result = 1;
                 step_input = DisplayInfo;
+                flg_Update = 1;
             }
             else
             {
@@ -411,83 +412,94 @@ void ScreenManager() {
         case VS: {
             char text[40];
 
-            if (!result)
+            if (!result) {
                 snprintf(text, sizeof(text), "%d ターン目 - %s のターン", turn, Is_A_Turn ? "○-PlayerA" : "●-PlayerB ");
-            else
-                snprintf(text, sizeof(text), "○ - :%d　● - :%d 勝者:%s", pcount, ecount, Is_A_Turn ? "○-PlayerA" : "●-PlayerB ");
+                Screen_Display("　　　 対人ゲーム ", text);
+                CalcSetArea();
+            }
+            else {
+                snprintf(text, sizeof(text), "○ - :%d　● - :%d 勝者:%s", pcount, ecount,
+                    (pcount > ecount ? "○-PlayerA" : (ecount > pcount ? "●-PlayerB" : "引き分け")));
+                Screen_Display("　　　 対人ゲーム【結果】", text);
+                printf("Enter を押すとメニューに戻ります。\n");
+            }
 
-            Screen_Display("　　　 対人ゲーム ", text);
-            CalcSetArea();
         }
                break;
         case CPU: {
-            char text[40];
+            char text[100];
             if (!result) {
                 snprintf(text, sizeof(text), "%d ターン目 - %s のターン", turn, Is_A_Turn ? "Player" : "CPU");
-
                 Screen_Display("　　　 CPUゲーム ", text);
                 CalcSetArea();
 
                 if (!Is_A_Turn) {
                     CPU_ChooseMove();
+                    Board_Decide();
+                    step_input = DisplayInfo;  // 再描画のため戻す
+                    return;
                 }
             }
             else {
-                snprintf(text, sizeof(text), "○ - :%d　● - :%d 勝者:%s", pcount, ecount, Is_A_Turn ? "○-PlayerA" : "●-CPU");
-                Screen_Display("　　　 CPUゲーム ", text);
+                snprintf(text, sizeof(text), "○ - :%d　● - :%d 勝者:%s", pcount, ecount,
+                    (pcount > ecount ? "○-Player" : (ecount > pcount ? "●-CPU" : "引き分け")));
+                Screen_Display("　　　 CPUゲーム【結果】", text);
+                printf("Enter を押すとメニューに戻ります。\n");
             }
         }
                 break;
-        default:
+        }
+        printf("操作 | ← → 選択 , Enter 決定\n");
+        step_input = Get;
+            break;
+
+    case Get: {
+        if (result) {
+            int ch = getch();
+            if (ch == 0x0d) { 
+                step_mode = Menu;
+                Field_Setup();      
+                result = false;     
+                step_input = DisplayInfo;
+            }
             break;
         }
-        printf("操作 | ← → 選択 , Enter 決定\n");// : "操作 | A or D 選択 | F 決定 |\n
-        step_input++;
-        break;
-    case Get: {
         int ch = getch();
         switch (step_mode) {
         case Menu: {
             if (ch == 0x4B) {
                 printf("←\n");
                 Mode_Select(true);
-                step_input++;
+                step_input = DisplayInfo;
+                break;
             }
             else if (ch == 0x4D) {
                 printf("→\n");
                 Mode_Select(false);
-                step_input++;
+                step_input = DisplayInfo;
+                break;
             }
             else if (ch == 0x0d) {
                 printf("Enter\n");
                 Mode_Decide();
-                step_input++;
+                step_input = DisplayInfo;
+                break;
             }
         }
                  break;
         case VS: {
-            if (result) {
-                step_mode = Menu;
-                Field_Setup();
-
-                step_input = DisplayInfo;
-                break;
-            }
-
             if (ch == 0x4B) {
                 printf("←\n");
                 Board_Select(true);
-                step_input++;
             }
             else if (ch == 0x4D) {
                 printf("→\n");
                 Board_Select(false);
-                step_input++;
             }
             else if (ch == 0x0d) {
                 printf("Enter\n");
                 Board_Decide();
-                step_input++;
+                step_input = DisplayInfo;
             }
             /*
             if (ch == 0x61) { // A
@@ -509,40 +521,23 @@ void ScreenManager() {
         }
                break;
         case CPU: {
-            if (result) {
-                step_mode = Menu;
-                Field_Setup();
-                result = false;
-                step_input = DisplayInfo;
-                step_input++;
-                break;
-            }
             if (Is_A_Turn) {
                 if (ch == 0x4B) {
                     printf("←\n");
                     Board_Select(false);
-                    step_input++;
+
                 }
                 else if (ch == 0x4D) {
                     printf("→\n");
                     Board_Select(true);
-                    step_input++;
                 }
                 else if (ch == 0x0d) {
                     printf("Enter\n");
                     Board_Decide();
-                    step_input++;
                 }
+                step_input = DisplayInfo;
             }
-            else if (ch == 0x0d) {
-                printf("Enter\n");
-                Board_Decide();
-                step_input++;
-            }
-        }
                 break;
-        default:
-            break;
         }
     }
             break;
