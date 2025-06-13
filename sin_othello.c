@@ -58,6 +58,23 @@ void Add(Node** head, Vec2Int data) {
     *head = newNode;
 }
 
+bool Exists(Node* head, Vec2Int data) {
+    Node* current = head;
+    while (current != NULL) {
+        if (current->data.x == data.x && current->data.y == data.y) {
+            return true;
+        }
+        current = current->next;
+    }
+    return false;
+}
+
+void AddUnique(Node** head, Vec2Int data) {
+    if (!Exists(*head, data)) {
+        Add(head, data);
+    }
+}
+
 void freeNode(Node* head) {
     Node* temp;
     while (head != NULL) {
@@ -229,22 +246,7 @@ void Screen_Display(char* string1, char* string2) {
     printf("-----------------------------------\n");
 }
 
-Vec2Int CPU_ChooseMove() {
-    if (length == 0) {
-        turn++;
-        skipCount++;
-        Is_A_Turn = Is_A_Turn ? 0 : 1;
-        flg_Update = 1;
-        CalcSetArea();
-        return;
-    }
 
-    int i = GetRandom(0, length - 1);
-
-    Index = i;
-    field[target.x][target.y] = 0;
-    target = list[i];
-}
 
 bool IsBoardFull() {
     for (int row = 0; row < MAXROW; row++) {
@@ -256,6 +258,14 @@ bool IsBoardFull() {
 }
 
 void NodeToArray(Node* head) {
+    // すでに存在している '+' をすべて消す
+    for (int row = 0; row < MAXROW; row++) {
+        for (int col = 0; col < MAXROW; col++) {
+            if (field[row][col] == 3) {
+                field[row][col] = 0;
+            }
+        }
+    }
     Node* temp = head;
     int index = 0;
     while (temp != NULL) {
@@ -377,7 +387,7 @@ void CalcSetArea() {
 
                             int check = field[tg.x][tg.y];
                             if (check == 0) {
-                                Add(&head, tg);
+                                AddUnique(&head, tg);
                                 break;
                             }
                             else if (check == playerNum) {
@@ -386,192 +396,209 @@ void CalcSetArea() {
                             // else 敵石なら continue
                         }
                     }
+                }
+            }
+        }
+    }
+    NodeToArray(head);
+    freeNode(head);
+    flg_Update = 0;
+}
+
+void Mode_Select(bool IsVS) {
+    flg_menu = IsVS;
+}
+
+void Mode_Decide() {
+    step_mode = flg_menu ? CPU : VS;
+    flg_Update = 1;
+}
+
+void ScreenManager() {
+    switch (step_input) {
+    case DisplayInfo:
+        switch (step_mode) {
+        case Menu:
+            Screen_Display("　　　  Home ", (flg_menu ? "●CPUゲーム←　○対人ゲーム" : "○CPUゲーム 　●対人ゲーム←"));
+            break;
+        case VS: {
+            char text[40];
+            snprintf(text, sizeof(text), "%d ターン目 - %s のターン", turn, Is_A_Turn ? "○-PlayerA" : "●-PlayerB ");
+
+            Screen_Display("　　　 対人ゲーム ", text);
+            CalcSetArea();
+        }
+               break;
+        case CPU: {
+            char text[40];
+            snprintf(text, sizeof(text), "%d ターン目 - %s のターン", turn, Is_A_Turn ? "Player" : "CPU");
+
+            Screen_Display("　　　 CPUゲーム ", text);
+            CalcSetArea();
 
 
+        }
+                break;
+        default:
+            break;
+        }
+        printf("操作 | ← → 選択 , Enter 決定 , z　終了\n");// : "操作 | A or D 選択 | F 決定 |\n
+        step_input++;
+        break;
+    case Get: {
+        int ch = getch();
+        switch (step_mode) {
+        case Menu: {
+            if (ch == 0x4B) {
+                printf("←\n");
+                Mode_Select(true);
+                step_input++;
+            }
+            else if (ch == 0x4D) {
+                printf("→\n");
+                Mode_Select(false);
+                step_input++;
+            }
+            else if (ch == 0x0d) {
+                printf("Enter\n");
+                Mode_Decide();
+                step_input++;
+            }
+        }
+                 break;
+        case VS: {
+            if (result) {
+                step_mode = Menu;
+                Field_Setup();
+                step_input = DisplayInfo;
+                break;
+            }
 
-                    
-                    /*if (field[tg.x][tg.y] == enemyNum) {
-
-                        while (!OutRange(tg)) {
-                            tg = Plus(tg, dir[i]);
-
-                            int check = field[tg.x][tg.y];
-                            if (check == 0) {
-                                Add(&head, tg);
-                                break;
-                            }
-                            else if (check == playerNum) {
-                                break;
-                            }
-                        }
-                    }*/
+            if (ch == 0x4B) {
+                printf("←\n");
+                Board_Select(false);
+                step_input++;
+            }
+            else if (ch == 0x4D) {
+                printf("→\n");
+                Board_Select(true);
+                step_input++;
+            }
+            else if (ch == 0x0d) {
+                printf("Enter\n");
+                Board_Decide();
+                step_input++;
+            }
+            else if (ch == 0x7A) {
+                printf("z\n");
+                Mode_Decide();
+                exit(0);
+            }
+        }
+               break;
+        case CPU: {
+            if (result) {
+                step_mode = Menu;
+                Field_Setup();
+                result = false;
+                step_input = DisplayInfo;
+                step_input++;
+                break;
+            }
+            if (Is_A_Turn) {
+                if (ch == 0x4B) {
+                    printf("←\n");
+                    Board_Select(false);
+                    step_input++;
+                }
+                else if (ch == 0x4D) {
+                    printf("→\n");
+                    Board_Select(true);
+                    step_input++;
+                }
+                else if (ch == 0x0d) {
+                    printf("Enter\n");
+                    Board_Decide();
+                    step_input++;
+                }
+                else if (ch == 0x7A) {
+                    printf("z\n");
+                    Mode_Decide();
+                    exit(0);
+                }
+            }
+            else if (ch == 0x0d) {
+                printf("Enter\n");
+                if (!Is_A_Turn) {
+                    // CPUターンなので合法手からランダム選択
+                    if (length > 0) {
+                        Index = GetRandom(0, length - 1);
+                        target = list[Index];
+                        Board_Decide();
                     }
-                 }
-             }
-         }
+                    else {
 
-         NodeToArray(head);
-         freeNode(head);
-         flg_Update = 0;
-     }
+                    }
+                }
+                else {
+                    // プレイヤーターン（今まで通り）
+                    Board_Decide();
+                }
+                step_input++;
+            }
+            else if (ch == 0x7A) {
+                printf("z\n");
+                Mode_Decide();
+                exit(0);
+            }
+        }
+                break;
+        default:
+            break;
+        }
+    }
+            break;
+    case End:
+        system("cls");
+        step_input = DisplayInfo;
+    }
+}
 
-     void Mode_Select(bool IsVS) {
-         flg_menu = IsVS;
-     }
+int main(void) {
+    list = NULL;
+    srand((unsigned int)time(NULL));
 
-     void Mode_Decide() {
-         step_mode = flg_menu ? CPU : VS;
-         flg_Update = 1;
-     }
+    Field_Setup();
 
-     void ScreenManager() {
-         switch (step_input) {
-         case DisplayInfo:
-             switch (step_mode) {
-             case Menu:
-                 Screen_Display("　　　  Home ", (flg_menu ? "●CPUゲーム←　○対人ゲーム" : "○CPUゲーム 　●対人ゲーム←"));
-                 break;
-             case VS: {
-                 char text[40];
-                 snprintf(text, sizeof(text), "%d ターン目 - %s のターン", turn, Is_A_Turn ? "○-PlayerA" : "●-PlayerB ");
+    while (1) {
+        ScreenManager();
+    }
 
-                 Screen_Display("　　　 対人ゲーム ", text);
-                 CalcSetArea();
-             }
-                    break;
-             case CPU: {
-                 char text[40];
-                 snprintf(text, sizeof(text), "%d ターン目 - %s のターン", turn, Is_A_Turn ? "Player" : "CPU");
+    free(list);
+    return 0;
+}
 
-                 Screen_Display("　　　 CPUゲーム ", text);
-                 CalcSetArea();
 
-                 if (!Is_A_Turn) {
-                     CPU_ChooseMove();
-                 }
-             }
-                     break;
-             default:
-                 break;
-             }
-             printf("操作 | ← → 選択 , Enter 決定 , z　終了\n");// : "操作 | A or D 選択 | F 決定 |\n
-             step_input++;
-             break;
-         case Get: {
-             int ch = getch();
-             switch (step_mode) {
-             case Menu: {
-                 if (ch == 0x4B) {
-                     printf("←\n");
-                     Mode_Select(true);
-                     step_input++;
-                 }
-                 else if (ch == 0x4D) {
-                     printf("→\n");
-                     Mode_Select(false);
-                     step_input++;
-                 }
-                 else if (ch == 0x0d) {
-                     printf("Enter\n");
-                     Mode_Decide();
-                     step_input++;
-                 }
-             }
-                      break;
-             case VS: {
-                 if (result) {
-                     step_mode = Menu;
-                     Field_Setup();
-                     step_input = DisplayInfo;
-                     break;
-                 }
 
-                 if (ch == 0x4B) {
-                     printf("←\n");
-                     Board_Select(false);
-                     step_input++;
-                 }
-                 else if (ch == 0x4D) {
-                     printf("→\n");
-                     Board_Select(true);
-                     step_input++;
-                 }
-                 else if (ch == 0x0d) {
-                     printf("Enter\n");
-                     Board_Decide();
-                     step_input++;
-                 }
-                 else if (ch == 0x7A) {
-                     printf("z\n");
-                     Mode_Decide();
-                     exit(0);
-                 }
-                 }
-                        break;
-                 case CPU: {
-                     if (result) {
-                         step_mode = Menu;
-                         Field_Setup();
-                         result = false;
-                         step_input = DisplayInfo;
-                         step_input++;
-                         break;
-                     }
-                     if (Is_A_Turn) {
-                         if (ch == 0x4B) {
-                             printf("←\n");
-                             Board_Select(false);
-                             step_input++;
-                         }
-                         else if (ch == 0x4D) {
-                             printf("→\n");
-                             Board_Select(true);
-                             step_input++;
-                         }
-                         else if (ch == 0x0d) {
-                             printf("Enter\n");
-                             Board_Decide();
-                             step_input++;
-                         }
-                         else if (ch == 0x7A) {
-                             printf("z\n");
-                             Mode_Decide();
-                             exit(0);
-                         }
-                     }
-                     else if (ch == 0x0d) {
-                         printf("Enter\n");
-                         Board_Decide();
-                         step_input++;
-                     }
-                     else if (ch == 0x7A) {
-                         printf("z\n");
-                         Mode_Decide();
-                         exit(0);
-                     }
-                 }
-                         break;
-                 default:
-                     break;
-                 }
-             }
-                     break;
-             case End:
-                 system("cls");
-                 step_input = DisplayInfo;
-             }
-         }
 
-         int main(void) {
-             list = NULL;
-             srand((unsigned int)time(NULL));
 
-             Field_Setup();
+//if (!Is_A_Turn) {
+//    CPU_ChooseMove();
+//}
+Vec2Int CPU_ChooseMove() {
+    int i = GetRandom(0, length - 1);
 
-             while (1) {
-                 ScreenManager();
-             }
+    Index = i;
+    field[target.x][target.y] = 0;
+    target = list[i];
+}
 
-             free(list);
-             return 0;
-         }
+//    if (length == 0) {
+//        turn++;
+//        skipCount++;
+//        Is_A_Turn = Is_A_Turn ? 0 : 1;
+//        flg_Update = 1;
+//        CalcSetArea();
+//        return;
+//    }
+//
