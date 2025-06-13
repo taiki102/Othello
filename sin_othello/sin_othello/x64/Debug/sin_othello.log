@@ -1,0 +1,3 @@
+﻿  sin_othello.c
+C:\Users\225026_k-kitamura\source\repos\sin_othello\sin_othello\sin_othello.c(594,1): warning C4716: 'CPU_ChooseMove': 値を返さなければいけません
+  sin_othello.vcxproj -> C:\Users\225026_k-kitamura\source\repos\sin_othello\x64\Debug\sin_othello.exe
