@@ -131,7 +131,7 @@ int pcount;
 int ecount;
 
 int GetRandom(int min, int max) { //s
-    return min + (int)(rand() * (max - min + 1.0) / (1.0 + RAND_MAX));
+    return min + rand() % (max - min + 1);
 } //f
 
 void Field_Setup() {
@@ -436,7 +436,10 @@ void ScreenManager() {
             Screen_Display("　　　 CPUゲーム ", text);
             CalcSetArea();
 
-
+            printf("=== プレイヤーの合法手一覧（length = %d）===\n", length);
+        for (int i = 0; i < length; i++) {
+            printf("[%d] (%d, %d)\n", i, list[i].x, list[i].y);
+        }
         }
                 break;
         default:
@@ -530,14 +533,38 @@ void ScreenManager() {
             else if (ch == 0x0d) {
                 printf("Enter\n");
                 if (!Is_A_Turn) {
-                    // CPUターンなので合法手からランダム選択
+                    flg_Update = 1;       // ★CPUターン前に更新を強制
+                    CalcSetArea();        // ★合法手チェック＋NodeToArray()呼び出し
+
+                    // デバッグ出力：合法手一覧を表示
+                    printf("=== CPUの合法手一覧（length = %d）===\n", length);
+                    for (int i = 0; i < length; i++) {
+                        printf("[%d] (%d, %d)\n", i, list[i].x, list[i].y);
+                    }
+
                     if (length > 0) {
+                        // フィールド上の以前の '+' を 0 に戻す（表示ミス防止）
+                        field[target.x][target.y] = 0;
+
                         Index = GetRandom(0, length - 1);
                         target = list[Index];
+                        printf("→ CPUが選んだ手: [%d] (%d, %d)\n", Index, target.x, target.y); // ★選ばれた手も表示
+
+                        // 一時停止（デバッグ用）--------------------
+                        printf("続行するには Enter キーを押してください...\n");
+                        getchar(); // ここでユーザーのキー入力待ち
+                        //--------------------------------------------
+
                         Board_Decide();
+                        flg_Update = 1; // 次の合法手再計算フラグ
                     }
                     else {
-
+                        printf("CPUに合法手がないため、スキップします。\n");
+                        turn++;            // ターン切り替え
+                        Is_A_Turn = 1;     // プレイヤーへ移行
+                        flg_Update = 1;    // 次の候補計算を許可
+                        step_input = DisplayInfo; // ★★←ここで強制的に再描画フェーズに戻す！
+                        return; // ← これで後の step_input++ をスキップ
                     }
                 }
                 else {
@@ -546,6 +573,7 @@ void ScreenManager() {
                 }
                 step_input++;
             }
+
             else if (ch == 0x7A) {
                 printf("z\n");
                 Mode_Decide();
@@ -585,13 +613,13 @@ int main(void) {
 //if (!Is_A_Turn) {
 //    CPU_ChooseMove();
 //}
-Vec2Int CPU_ChooseMove() {
+/*Vec2Int CPU_ChooseMove() {
     int i = GetRandom(0, length - 1);
 
     Index = i;
     field[target.x][target.y] = 0;
     target = list[i];
-}
+}*/
 
 //    if (length == 0) {
 //        turn++;
